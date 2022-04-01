@@ -1,0 +1,6 @@
+{
+    "version" : "1.0",
+    "dependencies" : [
+        {"name" : "raya", "version" : "0.7.0"}
+    ]
+}
