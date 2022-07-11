@@ -1,44 +1,89 @@
 import time
+import argparse
 
 from raya.application_base import RayaApplicationBase
 from raya.controllers.cameras_controller import CamerasController
 from raya.tools.image import show_image
 
-MOTION = True
+LOOP_PERIOD = 1.0
 
 class RayaApplication(RayaApplicationBase):
     async def setup(self):
-        self.i = 0
-        self.cameras: CamerasController = await self.enable_controller('cameras')
+
+        # Get Arguments
+        self.get_args()
+
+        # Call Cameras Controller
+        self.cameras: CamerasController = \
+                                    await self.enable_controller('cameras')
         self.available_cameras = self.cameras.available_color_cameras()
+        self.working_camera = None
         self.log.info('Available cameras:')
         self.log.info(f'  {self.available_cameras}')
-        self.working_camera = self.available_cameras[2]
+
+        # If a camera name was set
+        if self.camera != None:
+            cams = set(self.available_cameras)
+            if self.camera in cams:
+                self.working_camera = self.camera
+            else:
+                self.log.info('Camera name not available')
+                self.finish_app()
+                return
+        else:
+            # If a camera name wasn't set it works with camera in zero position
+            # self.working_camera = self.available_cameras[0]
+            self.working_camera = 'head_front'
+
         # Enable camera
         await self.cameras.enable_color_camera(self.working_camera)
+
         # Create listener
         self.cameras.create_color_frame_listener(
                                         camera_name=self.working_camera,
                                         callback=self.callback_color_frame)
-        if MOTION:
-            self.motion = await self.enable_controller('motion')
-            await self.motion.set_velocity(x=0.0, y=0.0, w=-0.5, duration=100.0)
 
+        # If spin parameter was set 
+        if self.spin_ena:
+            # Call motion controller
+            self.motion = await self.enable_controller('motion')
+            await self.motion.set_velocity(x_velocity=0.0, y_velocity=0.0, 
+                                           angular_velocity=-20.0, 
+                                           duration=self.duration)
+        self.time_counter = 0
 
     async def loop(self):
         self.log.info('Doing other (non blocking) stuff')
         await self.sleep(1.0)
-        self.i += 1
-        if self.i>10.0:
+        self.time_counter += 1
+        if self.time_counter>self.duration:
             self.finish_app()
         
 
     async def finish(self):
-        self.cameras.disable_color_camera(self.working_camera)
-        if MOTION:
+        if self.working_camera != None:
+            self.log.info('Disabling camera...')
+            self.cameras.disable_color_camera(self.working_camera)
+        if self.spin_ena and self.motion.is_moving():
             await self.motion.cancel_motion()
-        self.log.info('Ra-Ya application finished')
 
 
     def callback_color_frame(self, img):
         show_image(img, 'Video from Gary\'s camera', scale = 0.4)
+
+
+    def get_args(self):
+        # Arguments
+        parser = argparse.ArgumentParser()
+        parser.add_argument('-c', '--camera-name', type=str, 
+                            help='name of camera to use')
+        parser.add_argument('-s', '--spin', action='store_true', 
+                            help='Spins while scanning')
+        parser.add_argument('-d', '--duration',
+                            type=float, default=20.0,
+                            help='Scanning duration')
+        parser.set_defaults(feature=True)
+        args = parser.parse_args()
+        self.camera = args.camera_name
+        self.spin_ena = args.spin
+        self.duration = args.duration

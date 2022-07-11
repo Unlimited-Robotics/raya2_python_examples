@@ -1,0 +1,13 @@
+{
+    "app-id": "arms_general",
+    "simulation": false,
+    "robot-connection": {
+        "robot-id": "SIM-jeisonur-Nitro-AN515-55",
+        "ip-address": [
+            "192.168.20.240",
+            "172.17.0.1"
+        ],
+        "dds-domain": 2,
+        "robot-serial": "SIM-jeisonur-Nitro-AN515-55"
+    }
+}

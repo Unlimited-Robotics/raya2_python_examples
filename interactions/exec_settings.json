@@ -1,18 +1,12 @@
 {
     "app-id": "interactions",
     "app-name": "interactions",
-    "simulation": false,
+    "simulation": true,
     "dev-mode": true,
     "robot-connection": {
-        "robot-id": "SIM-nitro5-camilo",
-        "ip-address": [
-            "192.168.0.13",
-            "172.25.223.135",
-            "172.17.0.1"
-        ],
-        "dds-channel": 0,
-        "dds-domain": 1,
-        "robot-serial": "SIM-nitro5-camilo"
+        "robot-id": "",
+        "ip-address": "",
+        "dds-channel": 0
     },
     "logging": {
         "file_enabled": true,

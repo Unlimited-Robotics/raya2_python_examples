@@ -11,7 +11,7 @@ class RayaApplication(RayaApplicationBase):
 
     async def loop(self):
         await self.sleep(1.0)
-        self.log.info('hello!')
+        self.log.info('Doing other (non blocking) stuff...')
         
     async def finish(self):
         self.sensors.delete_listener(listener_name='thermometer')

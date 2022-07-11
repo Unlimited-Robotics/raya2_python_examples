@@ -1,0 +1,16 @@
+{
+    "app-id": "wix_app",
+    "app-name": "Wix App",
+    "simulation": true,
+    "dev-mode": true,
+    "robot-connection": {
+        "robot-id": "",
+        "ip-address": "",
+        "dds-channel": 0
+    },
+    "logging": {
+        "file_enabled": true,
+        "folder": "log"
+    },
+    "verbose-error-print": true
+}

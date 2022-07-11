@@ -1,0 +1,15 @@
+{
+    "app-id": "ex_sound_predefined",
+    "app-name": "sound",
+    "simulation": true,
+    "dev-mode": true,
+    "robot-connection": {
+        "robot-id": "",
+        "ip-address": "",
+        "dds-channel": 0
+    },
+    "logging": {
+        "file_enabled": true,
+        "folder": "log"
+    }
+}
